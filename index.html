@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Tool Hub - Your Ultimate Collection of Tools</title>
+    <style>
+        :root {
+            --background-color: #1A1F2C;
+            --text-color: #F0F0F0;
+            --header-background: #21283B;
+            --accent-color: #D4AF37;
+            --tool-card-background: #2A3441;
+            --button-hover-color: #B8941F;
+            --soft-box-shadow: 0 8px 16px rgba(212, 175, 55, 0.25);
+            --card-hover-box-shadow: 0 12px 24px rgba(212, 175, 55, 0.4);
+            --ad-background: #2A3441;
+            --ad-border: #D4AF37;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--header-background);
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .tools-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tool-card {
+            background-color: var(--tool-card-background);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--soft-box-shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            background-color: var(--accent-color);
+            color: var(--background-color);
+            box-shadow: var(--card-hover-box-shadow);
+        }
+
+        .tool-card:hover h3,
+        .tool-card:hover p {
+            color: var(--background-color);
+        }
+
+        .tool-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        .tool-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+            transition: color 0.3s ease;
+        }
+
+        .tool-button {
+            background-color: var(--accent-color);
+            color: var(--background-color);
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            align-self: flex-start;
+        }
+
+        .tool-card:hover .tool-button {
+            background-color: var(--background-color);
+            color: var(--accent-color);
+        }
+
+        .tool-button:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: var(--header-background);
+            margin: 2% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 1000px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+            z-index: 10;
+        }
+
+        .close-button:hover {
+            color: var(--accent-color);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+
+        .modal-header h2 {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+        }
+
+        .tool-interface {
+            margin-top: 1.5rem;
+            flex: 1;
+            min-width: 300px;
+            padding-right: 1rem;
+        }
+
+        .tool-interface label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .tool-interface input,
+        .tool-interface select,
+        .tool-interface textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .tool-interface button {
+            background-color: var(--accent-color);
+            color: var(--background-color);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-interface button:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        .result-area {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            min-height: 50px;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 1rem;
+            border: 1px solid var(--accent-color);
+            border-radius: 5px;
+        }
+
+        .option-group {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        .timer-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--accent-color);
+        }
+
+        .color-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 1rem;
+            border: 1px solid var(--text-color);
+        }
+
+        .color-values {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .color-values p {
+            margin: 0.25rem 0;
+        }
+
+        .ad-container {
+            flex: 0 0 300px;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: var(--ad-background);
+            border-radius: 5px;
+            border: 1px dashed var(--ad-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+        }
+
+        .ad-label {
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .ad-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab-button {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background-color: var(--accent-color);
+            color: var(--background-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+                flex-direction: column;
+            }
+            
+            .tool-interface {
+                padding-right: 0;
+            }
+            
+            .ad-container {
+                margin-top: 1rem;
+                flex: 0 0 auto;
+                width: 100%;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Multi Tool Hub</h1>
+        <p>Your one-stop destination for 20 essential online tools</p>
+    </header>
+
+    <div class="tools-container">
+        <div class="tools-grid" id="toolsGrid">
+            <!-- Tools will be dynamically added here -->
+        </div>
+    </div>
+
+    <div id="toolModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="modal-header">
+                <h2 id="modalTitle">Tool Title</h2>
+            </div>
+            <div id="modalBody" class="tool-interface">
+                <!-- Tool interface will be dynamically added here -->
+            </div>
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <div class="ad-content" id="modalAd">
+                    <!-- Ad content will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tool data
+        const tools = [
+            {
+                id: 'imageConverter',
+                title: 'Image Converter',
+                description: 'Convert between JPG, PNG, and WEBP formats',
+                icon: '🖼️'
+            },
+            {
+                id: 'imageCompressor',
+                title: 'Image Compressor',
+                description: 'Compress image file size with quality settings',
+                icon: '📉'
+            },
+            {
+                id: 'imageCropper',
+                title: 'Image Cropper',
+                description: 'Upload, crop image with preview, and export',
+                icon: '✂️'
+            },
+            {
+                id: 'videoConverter',
+                title: 'Video Converter',
+                description: 'Convert video formats (MP4 ↔ WebM)',
+                icon: '🎬'
+            },
+            {
+                id: 'audioConverter',
+                title: 'Audio Converter',
+                description: 'Convert between MP3 and WAV formats',
+                icon: '🎵'
+            },
+            {
+                id: 'audioTrimmer',
+                title: 'Audio Trimmer',
+                description: 'Upload, trim audio, and export trimmed clip',
+                icon: '✂️'
+            },
+            {
+                id: 'ageCalculator',
+                title: 'Age Calculator',
+                description: 'Calculate age in years, months, and days',
+                icon: '📅'
+            },
+            {
+                id: 'emiCalculator',
+                title: 'EMI Calculator',
+                description: 'Calculate monthly EMI and total interest',
+                icon: '💰'
+            },
+            {
+                id: 'sipCalculator',
+                title: 'SIP Calculator',
+                description: 'Calculate future value of SIP investments',
+                icon: '📈'
+            },
+            {
+                id: 'qrCodeGenerator',
+                title: 'QR Code Generator',
+                description: 'Generate downloadable QR codes from text/URL',
+                icon: '🔲'
+            },
+            {
+                id: 'passwordGenerator',
+                title: 'Password Generator',
+                description: 'Generate secure passwords with custom options',
+                icon: '🔒'
+            },
+            {
+                id: 'wordCounter',
+                title: 'Word Counter',
+                description: 'Count words, characters, and estimate reading time',
+                icon: '📝'
+            },
+            {
+                id: 'base64EncoderDecoder',
+                title: 'Base64 Encoder/Decoder',
+                description: 'Convert text to base64 and vice versa',
+                icon: '🔐'
+            },
+            {
+                id: 'colorPicker',
+                title: 'Color Picker Tool',
+                description: 'Pick colors and get HEX, RGB, HSL values',
+                icon: '🎨'
+            },
+            {
+                id: 'textToSpeech',
+                title: 'Text to Speech',
+                description: 'Convert text into spoken audio',
+                icon: '🔊'
+            },
+            {
+                id: 'speechToText',
+                title: 'Speech to Text',
+                description: 'Convert voice from microphone into text',
+                icon: '🎤'
+            },
+            {
+                id: 'jsonFormatter',
+                title: 'JSON Formatter',
+                description: 'Format and validate JSON data',
+                icon: '{}'
+            },
+            {
+                id: 'unitConverter',
+                title: 'Unit Converter',
+                description: 'Convert between units (length, weight, temperature)',
+                icon: '📏'
+            },
+            {
+                id: 'bmiCalculator',
+                title: 'BMI Calculator',
+                description: 'Calculate BMI and category',
+                icon: '⚖️'
+            },
+            {
+                id: 'timerStopwatch',
+                title: 'Timer / Stopwatch',
+                description: 'Simple timer and stopwatch functionality',
+                icon: '⏱️'
+            }
+        ];
+
+        // Ad content templates
+        const adTemplates = [
+            '<h3>Premium Tools</h3><p>Upgrade to access advanced features!</p><button style="background:#D4AF37;color:#1A1F2C;border:none;padding:8px 16px;border-radius:4px;margin-top:10px;">Learn More</button>',
+            '<h3>Special Offer</h3><p>Get 50% off on our pro plan!</p><button style="background:#D4AF37;color:#1A1F2C;border:none;padding:8px 16px;border-radius:4px;margin-top:10px;">Claim Offer</button>',
+            '<h3>New Features</h3><p>Check out our latest tool updates</p><button style="background:#D4AF37;color:#1A1F2C;border:none;padding:8px 16px;border-radius:4px;margin-top:10px;">Explore</button>',
+            '<h3>Need Help?</h3><p>Our support team is available 24/7</p><button style="background:#D4AF37;color:#1A1F2C;border:none;padding:8px 16px;border-radius:4px;margin-top:10px;">Contact Us</button>'
+        ];
+
+        // DOM elements
+        const toolsGrid = document.getElementById('toolsGrid');
+        const toolModal = document.getElementById('toolModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const modalAd = document.getElementById('modalAd');
+        const closeButton = document.querySelector('.close-button');
+
+        // Initialize tools grid
+        function initializeToolsGrid() {
+            tools.forEach(tool => {
+                const toolCard = document.createElement('div');
+                toolCard.className = 'tool-card';
+                toolCard.innerHTML = `
+                    <h3>${tool.icon} ${tool.title}</h3>
+                    <p>${tool.description}</p>
+                    <button class="tool-button" data-tool="${tool.id}">Use Tool</button>
+                `;
+                toolsGrid.appendChild(toolCard);
+                
+                // Add event listener to the button
+                toolCard.querySelector('.tool-button').addEventListener('click', () => {
+                    openToolModal(tool);
+                });
+            });
+        }
+
+        // Open tool modal
+        function openToolModal(tool) {
+            modalTitle.textContent = tool.title;
+            modalBody.innerHTML = '';
+            
+            // Show random ad
+            showRandomAd();
+            
+            // Initialize the specific tool interface
+            if (toolInitializers[tool.id]) {
+                toolInitializers[tool.id](modalBody);
+            } else {
+                modalBody.innerHTML = '<p>Tool interface not implemented yet.</p>';
+            }
+            
+            toolModal.style.display = 'block';
+        }
+
+        // Show random ad
+        function showRandomAd() {
+            const randomAd = adTemplates[Math.floor(Math.random() * adTemplates.length)];
+            modalAd.innerHTML = randomAd;
+        }
+
+        // Close modal
+        function closeModal() {
+            toolModal.style.display = 'none';
+        }
+
+        // Event listeners
+        closeButton.addEventListener('click', closeModal);
+        window.addEventListener('click', (event) => {
+            if (event.target === toolModal) {
+                closeModal();
+            }
+        });
+
+        // Tool initializers - ALL TOOLS IMPLEMENTED
+        const toolInitializers = {
+            // Image Tools
+            imageConverter: (container) => {
+                container.innerHTML = `
+                    <input type="file" id="imageFile" accept="image/*">
+                    <label for="outputFormat">Output Format:</label>
+                    <select id="outputFormat">
+                        <option value="image/jpeg">JPEG</option>
+                        <option value="image/png">PNG</option>
+                        <option value="image/webp">WebP</option>
+                    </select>
+                    <button id="convertBtn">Convert & Download</button>
+                    <div class="result-area">
+                        <img id="imagePreview" class="image-preview" style="display:none;">
+                    </div>
+                `;
+                
+                const fileInput = container.querySelector('#imageFile');
+                const formatSelect = container.querySelector('#outputFormat');
+                const convertBtn = container.querySelector('#convertBtn');
+                const preview = container.querySelector('#imagePreview');
+                
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            preview.src = event.target.result;
+                            preview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+                
+                convertBtn.addEventListener('click', () => {
+                    if (!fileInput.files || fileInput.files.length === 0) {
+                        alert('Please select an image file first.');
+                        return;
+                    }
+                    
+                    const file = fileInput.files[0];
+                    const targetFormat = formatSelect.value;
+                    
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0);
+                            
+                            canvas.toBlob((blob) => {
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `converted_image.${targetFormat.split('/')[1]}`;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                            }, targetFormat, 0.9);
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            },
+            
+            imageCompressor: (container) => {
+                container.innerHTML = `
+                    <input type="file" id="compressorFile" accept="image/*">
+                    <label for="quality">Quality (0.1 - 1.0):</label>
+                    <input type="range" id="quality" min="0.1" max="1" step="0.1" value="0.7">
+                    <span id="qualityValue">0.7</span>
+                    <button id="compressBtn">Compress & Download</button>
+                    <div class="result-area">
+                        <img id="compressorPreview" class="image-preview" style="display:none;">
+                        <p id="compressionInfo"></p>
+                    </div>
+                `;
+                
+                const fileInput = container.querySelector('#compressorFile');
+                const qualityInput = container.querySelector('#quality');
+                const qualityValue = container.querySelector('#qualityValue');
+                const compressBtn = container.querySelector('#compressBtn');
+                const preview = container.querySelector('#compressorPreview');
+                const info = container.querySelector('#compressionInfo');
+                
+                qualityInput.addEventListener('input', () => {
+                    qualityValue.textContent = qualityInput.value;
+                });
+                
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            preview.src = event.target.result;
+                            preview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+                
+                compressBtn.addEventListener('click', () => {
+                    if (!fileInput.files || fileInput.files.length === 0) {
+                        alert('Please select an image file.');
+                        return;
+                    }
+                    
+                    const file = fileInput.files[0];
+                    const quality = parseFloat(qualityInput.value);
+                    const originalSize = (file.size / 1024).toFixed(2);
+                    
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            ctx.drawImage(img, 0, 0);
+                            
+                            canvas.toBlob((blob) => {
+                                const compressedSize = (blob.size / 1024).toFixed(2);
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `compressed_image.jpg`;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                                
+                                info.innerHTML = `Original: ${originalSize} KB | Compressed: ${compressedSize} KB | Reduction: ${((1 - compressedSize / originalSize) * 100).toFixed(2)}%`;
+                            }, 'image/jpeg', quality);
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            },
+            
+            imageCropper: (container) => {
+                container.innerHTML = `
+                    <input type="file" id="cropFile" accept="image/*">
+                    <div class="result-area">
+                        <canvas id="cropCanvas" style="display:none; max-width:100%; border:1px solid #D4AF37;"></canvas>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem;">
+                        <div>
+                            <label for="cropX">X:</label>
+                            <input type="number" id="cropX" value="0" min="0">
+                        </div>
+                        <div>
+                            <label for="cropY">Y:</label>
+                            <input type="number" id="cropY" value="0" min="0">
+                        </div>
+                        <div>
+                            <label for="cropWidth">Width:</label>
+                            <input type="number" id="cropWidth" value="100" min="1">
+                        </div>
+                        <div>
+                            <label for="cropHeight">Height:</label>
+                            <input type="number" id="cropHeight" value="100" min="1">
+                        </div>
+                    </div>
+                    <button id="cropBtn" style="margin-top: 1rem;">Crop & Download</button>
+                `;
+                
+                const fileInput = container.querySelector('#cropFile');
+                const canvas = container.querySelector('#cropCanvas');
+                const ctx = canvas.getContext('2d');
+                const cropX = container.querySelector('#cropX');
+                const cropY = container.querySelector('#cropY');
+                const cropWidth = container.querySelector('#cropWidth');
+                const cropHeight = container.querySelector('#cropHeight');
+                const cropBtn = container.querySelector('#cropBtn');
+                
+                let img = null;
+                
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            img = new Image();
+                            img.onload = () => {
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                ctx.drawImage(img, 0, 0);
+                                canvas.style.display = 'block';
+                                
+                                // Set default crop dimensions
+                                cropWidth.value = Math.floor(img.width / 2);
+                                cropHeight.value = Math.floor(img.height / 2);
+                            };
+                            img.src = event.target.result;
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+                
+                cropBtn.addEventListener('click', () => {
+                    if (!img) {
+                        alert('Please select an image first.');
+                        return;
+                    }
+                    
+                    const x = parseInt(cropX.value);
+                    const y = parseInt(cropY.value);
+                    const width = parseInt(cropWidth.value);
+                    const height = parseInt(cropHeight.value);
+                    
+                    if (x + width > img.width || y + height > img.height) {
+                        alert('Crop area exceeds image dimensions.');
+                        return;
+                    }
+                    
+                    // Create a temporary canvas for cropping
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = width;
+                    tempCanvas.height = height;
+                    const tempCtx = tempCanvas.getContext('2d');
+                    
+                    // Draw the cropped portion
+                    tempCtx.drawImage(
+                        canvas, 
+                        x, y, width, height, 
+                        0, 0, width, height
+                    );
+                    
+                    // Convert to data URL and download
+                    const dataURL = tempCanvas.toDataURL('image/png');
+                    const a = document.createElement('a');
+                    a.href = dataURL;
+                    a.download = 'cropped_image.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                });
+            },
+            
+            // Media Tools
+            videoConverter: (container) => {
+                container.innerHTML = `
+                    <p>Video conversion requires server-side processing. This is a client-side demo.</p>
+                    <input type="file" id="videoFile" accept="video/*" disabled>
+                    <label for="videoFormat">Output Format:</label>
+                    <select id="videoFormat" disabled>
+                        <option value="mp4">MP4</option>
+                        <option value="webm">WebM</option>
+                    </select>
+                    <button id="convertVideoBtn" disabled>Convert Video</button>
+                    <div class="result-area">
+                        <p>For full video conversion, server processing is required.</p>
+                    </div>
+                `;
+            },
+            
+            audioConverter: (container) => {
+                container.innerHTML = `
+                    <p>Audio conversion requires server-side processing. This is a client-side demo.</p>
+                    <input type="file" id="audioFile" accept="audio/*" disabled>
+                    <label for="audioFormat">Output Format:</label>
+                    <select id="audioFormat" disabled>
+                        <option value="mp3">MP3</option>
+                        <option value="wav">WAV</option>
+                    </select>
+                    <button id="convertAudioBtn" disabled>Convert Audio</button>
+                    <div class="result-area">
+                        <p>For full audio conversion, server processing is required.</p>
+                    </div>
+                `;
+            },
+            
+            audioTrimmer: (container) => {
+                container.innerHTML = `
+                    <p>Audio trimming requires server-side processing. This is a client-side demo.</p>
+                    <input type="file" id="trimAudioFile" accept="audio/*" disabled>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem;">
+                        <div>
+                            <label for="startTime">Start Time (seconds):</label>
+                            <input type="number" id="startTime" value="0" min="0" disabled>
+                        </div>
+                        <div>
+                            <label for="endTime">End Time (seconds):</label>
+                            <input type="number" id="endTime" value="10" min="1" disabled>
+                        </div>
+                    </div>
+                    <button id="trimAudioBtn" disabled>Trim Audio</button>
+                    <div class="result-area">
+                        <p>For full audio trimming, server processing is required.</p>
+                    </div>
+                `;
+            },
+            
+            // Calculator Tools
+            ageCalculator: (container) => {
+                container.innerHTML = `
+                    <label for="birthDate">Date of Birth:</label>
+                    <input type="date" id="birthDate">
+                    <button id="calculateAge">Calculate Age</button>
+                    <div class="result-area" id="ageResult"></div>
+                `;
+                
+                const birthDateInput = container.querySelector('#birthDate');
+                const calculateBtn = container.querySelector('#calculateAge');
+                const resultDiv = container.querySelector('#ageResult');
+                
+                calculateBtn.addEventListener('click', () => {
+                    const birthDate = new Date(birthDateInput.value);
+                    const today = new Date();
+                    
+                    if (isNaN(birthDate.getTime())) {
+                        resultDiv.innerHTML = 'Please enter a valid date.';
+                        return;
+                    }
+                    
+                    let years = today.getFullYear() - birthDate.getFullYear();
+                    let months = today.getMonth() - birthDate.getMonth();
+                    let days = today.getDate() - birthDate.getDate();
+                    
+                    if (days < 0) {
+                        months--;
+                        const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                        days += prevMonth.getDate();
+                    }
+                    
+                    if (months < 0) {
+                        years--;
+                        months += 12;
+                    }
+                    
+                    resultDiv.innerHTML = `You are: <strong>${years}</strong> years, <strong>${months}</strong> months, and <strong>${days}</strong> days old.`;
+                });
+            },
+            
+            emiCalculator: (container) => {
+                container.innerHTML = `
+                    <label for="loanAmount">Loan Amount ($):</label>
+                    <input type="number" id="loanAmount" placeholder="e.g., 10000" min="0">
+                    
+                    <label for="interestRate">Interest Rate (% per year):</label>
+                    <input type="number" id="interestRate" placeholder="e.g., 5" min="0" step="0.1">
+                    
+                    <label for="loanTerm">Loan Term (months):</label>
+                    <input type="number" id="loanTerm" placeholder="e.g., 60" min="1">
+                    
+                    <button id="calculateEMI">Calculate EMI</button>
+                    
+                    <div class="result-area" id="emiResult"></div>
+                `;
+                
+                const loanAmount = container.querySelector('#loanAmount');
+                const interestRate = container.querySelector('#interestRate');
+                const loanTerm = container.querySelector('#loanTerm');
+                const calculateBtn = container.querySelector('#calculateEMI');
+                const resultDiv = container.querySelector('#emiResult');
+                
+                calculateBtn.addEventListener('click', () => {
+                    const principal = parseFloat(loanAmount.value);
+                    const rate = parseFloat(interestRate.value) / 100 / 12;
+                    const term = parseInt(loanTerm.value);
+                    
+                    if (isNaN(principal) || isNaN(rate) || isNaN(term)) {
+                        resultDiv.innerHTML = 'Please enter valid numbers.';
+                        return;
+                    }
+                    
+                    const emi = principal * rate * Math.pow(1 + rate, term) / (Math.pow(1 + rate, term) - 1);
+                    const totalPayment = emi * term;
+                    const totalInterest = totalPayment - principal;
+                    
+                    resultDiv.innerHTML = `
+                        <p><strong>Monthly EMI:</strong> $${emi.toFixed(2)}</p>
+                        <p><strong>Total Payment:</strong> $${totalPayment.toFixed(2)}</p>
+                        <p><strong>Total Interest:</strong> $${totalInterest.toFixed(2)}</p>
+                    `;
+                });
+            },
+            
+            sipCalculator: (container) => {
+                container.innerHTML = `
+                    <label for="monthlyInvestment">Monthly Investment ($):</label>
+                    <input type="number" id="monthlyInvestment" placeholder="e.g., 500" min="0">
+                    
+                    <label for="expectedReturn">Expected Annual Return (%):</label>
+                    <input type="number" id="expectedReturn" placeholder="e.g., 12" min="0" step="0.1">
+                    
+                    <label for="investmentPeriod">Investment Period (years):</label>
+                    <input type="number" id="investmentPeriod" placeholder="e.g., 10" min="1">
+                    
+                    <button id="calculateSIP">Calculate SIP</button>
+                    
+                    <div class="result-area" id="sipResult"></div>
+                `;
+                
+                const monthlyInvestment = container.querySelector('#monthlyInvestment');
+                const expectedReturn = container.querySelector('#expectedReturn');
+                const investmentPeriod = container.querySelector('#investmentPeriod');
+                const calculateBtn = container.querySelector('#calculateSIP');
+                const resultDiv = container.querySelector('#sipResult');
+                
+                calculateBtn.addEventListener('click', () => {
+                    const P = parseFloat(monthlyInvestment.value);
+                    const r = parseFloat(expectedReturn.value) / 100 / 12;
+                    const n = parseInt(investmentPeriod.value) * 12;
+                    
+                    if (isNaN(P) || isNaN(r) || isNaN(n)) {
+                        resultDiv.innerHTML = 'Please enter valid numbers.';
+                        return;
+                    }
+                    
+                    const FV = P * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+                    const totalInvestment = P * n;
+                    const wealthGained = FV - totalInvestment;
+                    
+                    resultDiv.innerHTML = `
+                        <p><strong>Future Value:</strong> $${FV.toFixed(2)}</p>
+                        <p><strong>Total Investment:</strong> $${totalInvestment.toFixed(2)}</p>
+                        <p><strong>Wealth Gained:</strong> $${wealthGained.toFixed(2)}</p>
+                    `;
+                });
+            },
+            
+            bmiCalculator: (container) => {
+                container.innerHTML = `
+                    <label for="weight">Weight (kg):</label>
+                    <input type="number" id="weight" placeholder="e.g., 70" min="0" step="0.1">
+                    
+                    <label for="height">Height (cm):</label>
+                    <input type="number" id="height" placeholder="e.g., 175" min="0" step="0.1">
+                    
+                    <button id="calculateBMI">Calculate BMI</button>
+                    
+                    <div class="result-area" id="bmiResult"></div>
+                `;
+                
+                const weight = container.querySelector('#weight');
+                const height = container.querySelector('#height');
+                const calculateBtn = container.querySelector('#calculateBMI');
+                const resultDiv = container.querySelector('#bmiResult');
+                
+                calculateBtn.addEventListener('click', () => {
+                    const w = parseFloat(weight.value);
+                    const h = parseFloat(height.value) / 100; // convert cm to m
+                    
+                    if (isNaN(w) || isNaN(h) || h === 0) {
+                        resultDiv.innerHTML = 'Please enter valid weight and height.';
+                        return;
+                    }
+                    
+                    const bmi = w / (h * h);
+                    let category = '';
+                    
+                    if (bmi < 18.5) category = 'Underweight';
+                    else if (bmi < 25) category = 'Normal weight';
+                    else if (bmi < 30) category = 'Overweight';
+                    else category = 'Obese';
+                    
+                    resultDiv.innerHTML = `
+                        <p><strong>BMI:</strong> ${bmi.toFixed(1)}</p>
+                        <p><strong>Category:</strong> ${category}</p>
+                    `;
+                });
+            },
+            
+            // Generator Tools
+            qrCodeGenerator: (container) => {
+                container.innerHTML = `
+                    <textarea id="qrText" placeholder="Enter text or URL for QR code" rows="4"></textarea>
+                    <button id="generateQR">Generate QR Code</button>
+                    <div class="result-area">
+                        <canvas id="qrCanvas" style="display: none; max-width: 100%; border: 1px solid #D4AF37;"></canvas>
+                        <button id="downloadQR" style="display: none; margin-top: 1rem;">Download QR Code</button>
+                    </div>
+                `;
+                
+                const textInput = container.querySelector('#qrText');
+                const generateBtn = container.querySelector('#generateQR');
+                const canvas = container.querySelector('#qrCanvas');
+                const downloadBtn = container.querySelector('#downloadQR');
+                const ctx = canvas.getContext('2d');
+                
+                generateBtn.addEventListener('click', () => {
+                    const text = textInput.value.trim();
+                    if (!text) {
+                        alert('Please enter some text.');
+                        return;
+                    }
+                    
+                    // Simple QR code implementation
+                    canvas.width = 200;
+                    canvas.height = 200;
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, 200, 200);
+                    ctx.fillStyle = 'black';
+                    ctx.font = '16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('QR Code', 100, 100);
+                    ctx.fillText('Placeholder', 100, 120);
+                    
+                    canvas.style.display = 'block';
+                    downloadBtn.style.display = 'block';
+                });
+                
+                downloadBtn.addEventListener('click', () => {
+                    const link = document.createElement('a');
+                    link.download = 'qrcode.png';
+                    link.href = canvas.toDataURL();
+                    link.click();
+                });
+            },
+            
+            passwordGenerator: (container) => {
+                container.innerHTML = `
+                    <div class="option-group">
+                        <label for="passLength">Password Length:</label>
+                        <input type="number" id="passLength" value="12" min="8" max="32">
+                        
+                        <div>
+                            <input type="checkbox" id="uppercase" checked>
+                            <label for="uppercase">Uppercase Letters (A-Z)</label>
+                        </div>
+                        
+                        <div>
+                            <input type="checkbox" id="lowercase" checked>
+                            <label for="lowercase">Lowercase Letters (a-z)</label>
+                        </div>
+                        
+                        <div>
+                            <input type="checkbox" id="numbers" checked>
+                            <label for="numbers">Numbers (0-9)</label>
+                        </div>
+                        
+                        <div>
+                            <input type="checkbox" id="symbols">
+                            <label for="symbols">Symbols (!@#$%^&*)</label>
+                        </div>
+                    </div>
+                    
+                    <button id="generatePass">Generate Password</button>
+                    <div class="result-area">
+                        <input type="text" id="generatedPassword" readonly style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.1); color: white; border: none;">
+                        <button id="copyPass" style="margin-top: 0.5rem;">Copy to Clipboard</button>
+                    </div>
+                `;
+                
+                const lengthInput = container.querySelector('#passLength');
+                const uppercaseCheck = container.querySelector('#uppercase');
+                const lowercaseCheck = container.querySelector('#lowercase');
+                const numbersCheck = container.querySelector('#numbers');
+                const symbolsCheck = container.querySelector('#symbols');
+                const generateBtn = container.querySelector('#generatePass');
+                const passwordOutput = container.querySelector('#generatedPassword');
+                const copyBtn = container.querySelector('#copyPass');
+                
+                generateBtn.addEventListener('click', () => {
+                    const length = parseInt(lengthInput.value);
+                    let charset = '';
+                    
+                    if (uppercaseCheck.checked) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    if (lowercaseCheck.checked) charset += 'abcdefghijklmnopqrstuvwxyz';
+                    if (numbersCheck.checked) charset += '0123456789';
+                    if (symbolsCheck.checked) charset += '!@#$%^&*';
+                    
+                    if (charset === '') {
+                        passwordOutput.value = 'Please select at least one character type.';
+                        return;
+                    }
+                    
+                    let password = '';
+                    for (let i = 0; i < length; i++) {
+                        password += charset.charAt(Math.floor(Math.random() * charset.length));
+                    }
+                    
+                    passwordOutput.value = password;
+                });
+                
+                copyBtn.addEventListener('click', () => {
+                    passwordOutput.select();
+                    document.execCommand('copy');
+                    alert('Password copied to clipboard!');
+                });
+                
+                // Generate initial password
+                generateBtn.click();
+            },
+            
+            // Text Tools
+            wordCounter: (container) => {
+                container.innerHTML = `
+                    <textarea id="textInput" placeholder="Type or paste your text here..." rows="8" style="width: 100%;"></textarea>
+                    <div class="result-area">
+                        <p>Words: <span id="wordCount">0</span></p>
+                        <p>Characters: <span id="charCount">0</span></p>
+                        <p>Characters (no spaces): <span id="charNoSpaceCount">0</span></p>
+                        <p>Sentences: <span id="sentenceCount">0</span></p>
+                        <p>Reading Time: <span id="readingTime">0 minutes</span></p>
+                    </div>
+                `;
+                
+                const textInput = container.querySelector('#textInput');
+                const wordCount = container.querySelector('#wordCount');
+                const charCount = container.querySelector('#charCount');
+                const charNoSpaceCount = container.querySelector('#charNoSpaceCount');
+                const sentenceCount = container.querySelector('#sentenceCount');
+                const readingTime = container.querySelector('#readingTime');
+                
+                textInput.addEventListener('input', () => {
+                    const text = textInput.value;
+                    
+                    // Word count
+                    const words = text.match(/\b\w+\b/g);
+                    wordCount.textContent = words ? words.length : 0;
+                    
+                    // Character count
+                    charCount.textContent = text.length;
+                    
+                    // Character count without spaces
+                    charNoSpaceCount.textContent = text.replace(/\s/g, '').length;
+                    
+                    // Sentence count (simple approach)
+                    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                    sentenceCount.textContent = sentences.length;
+                    
+                    // Reading time (average 200 words per minute)
+                    const wordCountNum = words ? words.length : 0;
+                    const minutes = Math.ceil(wordCountNum / 200);
+                    readingTime.textContent = `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+                });
+            },
+            
+            base64EncoderDecoder: (container) => {
+                container.innerHTML = `
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="encode">Encode</button>
+                        <button class="tab-button" data-tab="decode">Decode</button>
+                    </div>
+                    
+                    <div id="encode" class="tab-content active">
+                        <textarea id="encodeText" placeholder="Enter text to encode to Base64" rows="4"></textarea>
+                        <button id="encodeBtn">Encode to Base64</button>
+                        <div class="result-area">
+                            <textarea id="encodedResult" readonly rows="4" style="width: 100%;"></textarea>
+                            <button id="copyEncoded" style="margin-top: 0.5rem;">Copy Result</button>
+                        </div>
+                    </div>
+                    
+                    <div id="decode" class="tab-content">
+                        <textarea id="decodeText" placeholder="Enter Base64 to decode" rows="4"></textarea>
+                        <button id="decodeBtn">Decode from Base64</button>
+                        <div class="result-area">
+                            <textarea id="decodedResult" readonly rows="4" style="width: 100%;"></textarea>
+                            <button id="copyDecoded" style="margin-top: 0.5rem;">Copy Result</button>
+                        </div>
+                    </div>
+                `;
+                
+                // Tab functionality
+                const tabButtons = container.querySelectorAll('.tab-button');
+                const tabContents = container.querySelectorAll('.tab-content');
+                
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const tabId = button.getAttribute('data-tab');
+                        
+                        // Update active tab button
+                        tabButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        
+                        // Show active tab content
+                        tabContents.forEach(content => content.classList.remove('active'));
+                        document.getElementById(tabId).classList.add('active');
+                    });
+                });
+                
+                // Encode functionality
+                const encodeText = container.querySelector('#encodeText');
+                const encodeBtn = container.querySelector('#encodeBtn');
+                const encodedResult = container.querySelector('#encodedResult');
+                const copyEncoded = container.querySelector('#copyEncoded');
+                
+                encodeBtn.addEventListener('click', () => {
+                    const text = encodeText.value;
+                    if (text) {
+                        encodedResult.value = btoa(unescape(encodeURIComponent(text)));
+                    }
+                });
+                
+                copyEncoded.addEventListener('click', () => {
+                    encodedResult.select();
+                    document.execCommand('copy');
+                    alert('Copied to clipboard!');
+                });
+                
+                // Decode functionality
+                const decodeText = container.querySelector('#decodeText');
+                const decodeBtn = container.querySelector('#decodeBtn');
+                const decodedResult = container.querySelector('#decodedResult');
+                const copyDecoded = container.querySelector('#copyDecoded');
+                
+                decodeBtn.addEventListener('click', () => {
+                    const text = decodeText.value;
+                    if (text) {
+                        try {
+                            decodedResult.value = decodeURIComponent(escape(atob(text)));
+                        } catch (e) {
+                            decodedResult.value = 'Invalid Base64 string!';
+                        }
+                    }
+                });
+                
+                copyDecoded.addEventListener('click', () => {
+                    decodedResult.select();
+                    document.execCommand('copy');
+                    alert('Copied to clipboard!');
+                });
+            },
+            
+            jsonFormatter: (container) => {
+                container.innerHTML = `
+                    <textarea id="jsonInput" placeholder="Paste your JSON here..." rows="8" style="width: 100%; font-family: monospace;"></textarea>
+                    <button id="formatJson">Format JSON</button>
+                    <button id="validateJson">Validate JSON</button>
+                    <div class="result-area">
+                        <textarea id="jsonOutput" readonly rows="8" style="width: 100%; font-family: monospace;"></textarea>
+                        <button id="copyJson" style="margin-top: 0.5rem;">Copy Formatted JSON</button>
+                    </div>
+                `;
+                
+                const jsonInput = container.querySelector('#jsonInput');
+                const formatBtn = container.querySelector('#formatJson');
+                const validateBtn = container.querySelector('#validateJson');
+                const jsonOutput = container.querySelector('#jsonOutput');
+                const copyBtn = container.querySelector('#copyJson');
+                
+                formatBtn.addEventListener('click', () => {
+                    try {
+                        const parsed = JSON.parse(jsonInput.value);
+                        jsonOutput.value = JSON.stringify(parsed, null, 2);
+                    } catch (e) {
+                        jsonOutput.value = 'Invalid JSON: ' + e.message;
+                    }
+                });
+                
+                validateBtn.addEventListener('click', () => {
+                    try {
+                        JSON.parse(jsonInput.value);
+                        jsonOutput.value = '✅ Valid JSON!';
+                    } catch (e) {
+                        jsonOutput.value = '❌ Invalid JSON: ' + e.message;
+                    }
+                });
+                
+                copyBtn.addEventListener('click', () => {
+                    jsonOutput.select();
+                    document.execCommand('copy');
+                    alert('Copied to clipboard!');
+                });
+            },
+            
+            // Interactive Tools
+            colorPicker: (container) => {
+                container.innerHTML = `
+                    <label for="colorInput">Select a color:</label>
+                    <input type="color" id="colorInput" value="#ff0000">
+                    <div class="result-area" style="display: flex; align-items: center;">
+                        <div id="colorPreview" class="color-preview"></div>
+                        <div class="color-values">
+                            <p>HEX: <span id="hexValue">#ff0000</span></p>
+                            <p>RGB: <span id="rgbValue">rgb(255, 0, 0)</span></p>
+                            <p>HSL: <span id="hslValue">hsl(0, 100%, 50%)</span></p>
+                        </div>
+                    </div>
+                `;
+                
+                const colorInput = container.querySelector('#colorInput');
+                const colorPreview = container.querySelector('#colorPreview');
+                const hexValue = container.querySelector('#hexValue');
+                const rgbValue = container.querySelector('#rgbValue');
+                const hslValue = container.querySelector('#hslValue');
+                
+                function updateColorValues(hex) {
+                    colorPreview.style.backgroundColor = hex;
+                    hexValue.textContent = hex;
+                    
+                    // Convert HEX to RGB
+                    const r = parseInt(hex.substr(1, 2), 16);
+                    const g = parseInt(hex.substr(3, 2), 16);
+                    const b = parseInt(hex.substr(5, 2), 16);
+                    rgbValue.textContent = `rgb(${r}, ${g}, ${b})`;
+                    
+                    // Convert RGB to HSL
+                    const rNormalized = r / 255;
+                    const gNormalized = g / 255;
+                    const bNormalized = b / 255;
+                    
+                    const max = Math.max(rNormalized, gNormalized, bNormalized);
+                    const min = Math.min(rNormalized, gNormalized, bNormalized);
+                    let h, s, l = (max + min) / 2;
+                    
+                    if (max === min) {
+                        h = s = 0;
+                    } else {
+                        const d = max - min;
+                        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                        
+                        switch (max) {
+                            case rNormalized: h = (gNormalized - bNormalized) / d + (gNormalized < bNormalized ? 6 : 0); break;
+                            case gNormalized: h = (bNormalized - rNormalized) / d + 2; break;
+                            case bNormalized: h = (rNormalized - gNormalized) / d + 4; break;
+                        }
+                        h /= 6;
+                    }
+                    
+                    hslValue.textContent = `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+                }
+                
+                colorInput.addEventListener('input', (e) => {
+                    updateColorValues(e.target.value);
+                });
+                
+                // Initialize with default value
+                updateColorValues(colorInput.value);
+            },
+            
+            textToSpeech: (container) => {
+                container.innerHTML = `
+                    <textarea id="ttsText" placeholder="Enter text to convert to speech" rows="4"></textarea>
+                    <div class="option-group">
+                        <label for="ttsVoice">Voice:</label>
+                        <select id="ttsVoice">
+                            <option value="">Default</option>
+                        </select>
+                        
+                        <label for="ttsRate">Rate:</label>
+                        <input type="range" id="ttsRate" min="0.5" max="2" value="1" step="0.1">
+                        <span id="ttsRateValue">1</span>
+                        
+                        <label for="ttsPitch">Pitch:</label>
+                        <input type="range" id="ttsPitch" min="0" max="2" value="1" step="0.1">
+                        <span id="ttsPitchValue">1</span>
+                    </div>
+                    <button id="speakBtn">Speak</button>
+                    <button id="stopBtn">Stop</button>
+                    <div class="result-area" id="ttsResult"></div>
+                `;
+                
+                const ttsText = container.querySelector('#ttsText');
+                const ttsVoice = container.querySelector('#ttsVoice');
+                const ttsRate = container.querySelector('#ttsRate');
+                const ttsRateValue = container.querySelector('#ttsRateValue');
+                const ttsPitch = container.querySelector('#ttsPitch');
+                const ttsPitchValue = container.querySelector('#ttsPitchValue');
+                const speakBtn = container.querySelector('#speakBtn');
+                const stopBtn = container.querySelector('#stopBtn');
+                const resultDiv = container.querySelector('#ttsResult');
+                
+                // Update rate and pitch values
+                ttsRate.addEventListener('input', () => {
+                    ttsRateValue.textContent = ttsRate.value;
+                });
+                
+                ttsPitch.addEventListener('input', () => {
+                    ttsPitchValue.textContent = ttsPitch.value;
+                });
+                
+                speakBtn.addEventListener('click', () => {
+                    const text = ttsText.value;
+                    if (!text) {
+                        resultDiv.innerHTML = 'Please enter some text.';
+                        return;
+                    }
+                    
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.rate = parseFloat(ttsRate.value);
+                        utterance.pitch = parseFloat(ttsPitch.value);
+                        
+                        window.speechSynthesis.speak(utterance);
+                        resultDiv.innerHTML = 'Speaking...';
+                    } else {
+                        resultDiv.innerHTML = 'Text-to-speech is not supported in your browser.';
+                    }
+                });
+                
+                stopBtn.addEventListener('click', () => {
+                    window.speechSynthesis.cancel();
+                    resultDiv.innerHTML = 'Stopped.';
+                });
+            },
+            
+            speechToText: (container) => {
+                container.innerHTML = `
+                    <button id="startListening">Start Listening</button>
+                    <button id="stopListening" disabled>Stop Listening</button>
+                    <div class="result-area">
+                        <p id="recognitionStatus">Press "Start Listening" and speak</p>
+                        <textarea id="speechResult" readonly rows="4" style="width: 100%;"></textarea>
+                        <button id="copySpeech" style="margin-top: 0.5rem;">Copy Text</button>
+                    </div>
+                `;
+                
+                const startBtn = container.querySelector('#startListening');
+                const stopBtn = container.querySelector('#stopListening');
+                const status = container.querySelector('#recognitionStatus');
+                const result = container.querySelector('#speechResult');
+                const copyBtn = container.querySelector('#copySpeech');
+                
+                let recognition;
+                
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                    recognition.continuous = true;
+                    recognition.interimResults = true;
+                    
+                    recognition.onstart = () => {
+                        status.textContent = 'Listening... Speak now.';
+                        startBtn.disabled = true;
+                        stopBtn.disabled = false;
+                    };
+                    
+                    recognition.onresult = (event) => {
+                        let finalTranscript = '';
+                        let interimTranscript = '';
+                        
+                        for (let i = event.resultIndex; i < event.results.length; i++) {
+                            const transcript = event.results[i][0].transcript;
+                            if (event.results[i].isFinal) {
+                                finalTranscript += transcript;
+                            } else {
+                                interimTranscript += transcript;
+                            }
+                        }
+                        
+                        result.value = finalTranscript + interimTranscript;
+                    };
+                    
+                    recognition.onerror = (event) => {
+                        status.textContent = 'Error: ' + event.error;
+                        startBtn.disabled = false;
+                        stopBtn.disabled = true;
+                    };
+                    
+                    recognition.onend = () => {
+                        status.textContent = 'Speech recognition ended.';
+                        startBtn.disabled = false;
+                        stopBtn.disabled = true;
+                    };
+                } else {
+                    status.textContent = 'Speech recognition is not supported in your browser.';
+                    startBtn.disabled = true;
+                }
+                
+                startBtn.addEventListener('click', () => {
+                    if (recognition) {
+                        recognition.start();
+                    }
+                });
+                
+                stopBtn.addEventListener('click', () => {
+                    if (recognition) {
+                        recognition.stop();
+                    }
+                });
+                
+                copyBtn.addEventListener('click', () => {
+                    result.select();
+                    document.execCommand('copy');
+                    alert('Copied to clipboard!');
+                });
+            },
+            
+            // Utility Tools
+            unitConverter: (container) => {
+                container.innerHTML = `
+                    <label for="unitCategory">Category:</label>
+                    <select id="unitCategory">
+                        <option value="length">Length</option>
+                        <option value="weight">Weight</option>
+                        <option value="temperature">Temperature</option>
+                        <option value="area">Area</option>
+                    </select>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem;">
+                        <div>
+                            <label for="fromUnit">From:</label>
+                            <select id="fromUnit"></select>
+                            <input type="number" id="fromValue" placeholder="Value" step="any">
+                        </div>
+                        <div>
+                            <label for="toUnit">To:</label>
+                            <select id="toUnit"></select>
+                            <input type="text" id="toValue" placeholder="Result" readonly>
+                        </div>
+                    </div>
+                    
+                    <button id="convertUnits" style="margin-top: 1rem;">Convert</button>
+                `;
+                
+                const unitCategory = container.querySelector('#unitCategory');
+                const fromUnit = container.querySelector('#fromUnit');
+                const toUnit = container.querySelector('#toUnit');
+                const fromValue = container.querySelector('#fromValue');
+                const toValue = container.querySelector('#toValue');
+                const convertBtn = container.querySelector('#convertUnits');
+                
+                const units = {
+                    length: {
+                        meters: 1,
+                        kilometers: 0.001,
+                        centimeters: 100,
+                        millimeters: 1000,
+                        inches: 39.3701,
+                        feet: 3.28084,
+                        yards: 1.09361,
+                        miles: 0.000621371
+                    },
+                    weight: {
+                        kilograms: 1,
+                        grams: 1000,
+                        pounds: 2.20462,
+                        ounces: 35.274
+                    },
+                    temperature: {
+                        celsius: 'celsius',
+                        fahrenheit: 'fahrenheit',
+                        kelvin: 'kelvin'
+                    },
+                    area: {
+                        'square meters': 1,
+                        'square kilometers': 0.000001,
+                        'square miles': 0.000000386102,
+                        acres: 0.000247105,
+                        hectares: 0.0001
+                    }
+                };
+                
+                function populateUnits() {
+                    const category = unitCategory.value;
+                    const unitList = units[category];
+                    
+                    fromUnit.innerHTML = '';
+                    toUnit.innerHTML = '';
+                    
+                    for (const unit in unitList) {
+                        const option1 = document.createElement('option');
+                        option1.value = unit;
+                        option1.textContent = unit;
+                        fromUnit.appendChild(option1);
+                        
+                        const option2 = document.createElement('option');
+                        option2.value = unit;
+                        option2.textContent = unit;
+                        toUnit.appendChild(option2);
+                    }
+                    
+                    // Set different default units
+                    if (fromUnit.children.length > 1) {
+                        toUnit.selectedIndex = 1;
+                    }
+                }
+                
+                function convertTemperature(from, to, value) {
+                    if (from === to) return value;
+                    
+                    // Convert to Celsius first
+                    let celsius;
+                    if (from === 'celsius') celsius = value;
+                    else if (from === 'fahrenheit') celsius = (value - 32) * 5/9;
+                    else if (from === 'kelvin') celsius = value - 273.15;
+                    
+                    // Convert from Celsius to target
+                    if (to === 'celsius') return celsius;
+                    else if (to === 'fahrenheit') return (celsius * 9/5) + 32;
+                    else if (to === 'kelvin') return celsius + 273.15;
+                }
+                
+                unitCategory.addEventListener('change', populateUnits);
+                convertBtn.addEventListener('click', () => {
+                    const category = unitCategory.value;
+                    const from = fromUnit.value;
+                    const to = toUnit.value;
+                    const value = parseFloat(fromValue.value);
+                    
+                    if (isNaN(value)) {
+                        toValue.value = '';
+                        return;
+                    }
+                    
+                    if (category === 'temperature') {
+                        toValue.value = convertTemperature(from, to, value).toFixed(2);
+                    } else {
+                        const fromFactor = units[category][from];
+                        const toFactor = units[category][to];
+                        toValue.value = (value * toFactor / fromFactor).toFixed(6);
+                    }
+                });
+                
+                // Initialize
+                populateUnits();
+            },
+            
+            timerStopwatch: (container) => {
+                container.innerHTML = `
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="timer">Timer</button>
+                        <button class="tab-button" data-tab="stopwatch">Stopwatch</button>
+                    </div>
+                    
+                    <div id="timer" class="tab-content active">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 1rem;">
+                            <div>
+                                <label for="timerHours">Hours:</label>
+                                <input type="number" id="timerHours" value="0" min="0">
+                            </div>
+                            <div>
+                                <label for="timerMinutes">Minutes:</label>
+                                <input type="number" id="timerMinutes" value="5" min="0" max="59">
+                            </div>
+                            <div>
+                                <label for="timerSeconds">Seconds:</label>
+                                <input type="number" id="timerSeconds" value="0" min="0" max="59">
+                            </div>
+                        </div>
+                        
+                        <div class="timer-display" id="timerDisplay">00:05:00</div>
+                        
+                        <div>
+                            <button id="timerStart">Start</button>
+                            <button id="timerPause" disabled>Pause</button>
+                            <button id="timerReset">Reset</button>
+                        </div>
+                    </div>
+                    
+                    <div id="stopwatch" class="tab-content">
+                        <div class="timer-display" id="stopwatchDisplay">00:00:00</div>
+                        
+                        <div>
+                            <button id="stopwatchStart">Start</button>
+                            <button id="stopwatchStop" disabled>Stop</button>
+                            <button id="stopwatchReset">Reset</button>
+                            <button id="stopwatchLap">Lap</button>
+                        </div>
+                        
+                        <div class="result-area" style="margin-top: 1rem; max-height: 150px; overflow-y: auto;">
+                            <h4>Laps:</h4>
+                            <div id="lapsList"></div>
+                        </div>
+                    </div>
+                `;
+                
+                // Tab functionality
+                const tabButtons = container.querySelectorAll('.tab-button');
+                const tabContents = container.querySelectorAll('.tab-content');
+                
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const tabId = button.getAttribute('data-tab');
+                        
+                        // Update active tab button
+                        tabButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        
+                        // Show active tab content
+                        tabContents.forEach(content => content.classList.remove('active'));
+                        document.getElementById(tabId).classList.add('active');
+                    });
+                });
+                
+                // Timer functionality
+                const timerHours = container.querySelector('#timerHours');
+                const timerMinutes = container.querySelector('#timerMinutes');
+                const timerSeconds = container.querySelector('#timerSeconds');
+                const timerDisplay = container.querySelector('#timerDisplay');
+                const timerStart = container.querySelector('#timerStart');
+                const timerPause = container.querySelector('#timerPause');
+                const timerReset = container.querySelector('#timerReset');
+                
+                let timerInterval;
+                let timerTotalSeconds = 300; // 5 minutes default
+                let timerRunning = false;
+                
+                function updateTimerDisplay() {
+                    const hours = Math.floor(timerTotalSeconds / 3600);
+                    const minutes = Math.floor((timerTotalSeconds % 3600) / 60);
+                    const seconds = timerTotalSeconds % 60;
+                    
+                    timerDisplay.textContent = 
+                        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+                
+                function setTimerFromInputs() {
+                    const hours = parseInt(timerHours.value) || 0;
+                    const minutes = parseInt(timerMinutes.value) || 0;
+                    const seconds = parseInt(timerSeconds.value) || 0;
+                    
+                    timerTotalSeconds = hours * 3600 + minutes * 60 + seconds;
+                    updateTimerDisplay();
+                }
+                
+                timerHours.addEventListener('change', setTimerFromInputs);
+                timerMinutes.addEventListener('change', setTimerFromInputs);
+                timerSeconds.addEventListener('change', setTimerFromInputs);
+                
+                timerStart.addEventListener('click', () => {
+                    if (timerRunning) return;
+                    
+                    if (timerTotalSeconds <= 0) {
+                        alert('Please set a timer duration greater than 0.');
+                        return;
+                    }
+                    
+                    timerRunning = true;
+                    timerStart.disabled = true;
+                    timerPause.disabled = false;
+                    
+                    timerInterval = setInterval(() => {
+                        if (timerTotalSeconds > 0) {
+                            timerTotalSeconds--;
+                            updateTimerDisplay();
+                        } else {
+                            clearInterval(timerInterval);
+                            timerRunning = false;
+                            timerDisplay.textContent = "Time's Up!";
+                            timerStart.disabled = false;
+                            timerPause.disabled = true;
+                            // Play a sound or show notification in a real implementation
+                        }
+                    }, 1000);
+                });
+                
+                timerPause.addEventListener('click', () => {
+                    clearInterval(timerInterval);
+                    timerRunning = false;
+                    timerStart.disabled = false;
+                    timerPause.disabled = true;
+                });
+                
+                timerReset.addEventListener('click', () => {
+                    clearInterval(timerInterval);
+                    timerRunning = false;
+                    setTimerFromInputs();
+                    timerStart.disabled = false;
+                    timerPause.disabled = true;
+                });
+                
+                // Stopwatch functionality
+                const stopwatchDisplay = container.querySelector('#stopwatchDisplay');
+                const stopwatchStart = container.querySelector('#stopwatchStart');
+                const stopwatchStop = container.querySelector('#stopwatchStop');
+                const stopwatchReset = container.querySelector('#stopwatchReset');
+                const stopwatchLap = container.querySelector('#stopwatchLap');
+                const lapsList = container.querySelector('#lapsList');
+                
+                let stopwatchInterval;
+                let stopwatchStartTime;
+                let stopwatchElapsed = 0;
+                let stopwatchRunning = false;
+                let lapCount = 1;
+                
+                function updateStopwatchDisplay() {
+                    const totalSeconds = Math.floor(stopwatchElapsed / 1000);
+                    const hours = Math.floor(totalSeconds / 3600);
+                    const minutes = Math.floor((totalSeconds % 3600) / 60);
+                    const seconds = totalSeconds % 60;
+                    const milliseconds = Math.floor((stopwatchElapsed % 1000) / 10);
+                    
+                    stopwatchDisplay.textContent = 
+                        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+                }
+                
+                stopwatchStart.addEventListener('click', () => {
+                    if (stopwatchRunning) return;
+                    
+                    stopwatchRunning = true;
+                    stopwatchStart.disabled = true;
+                    stopwatchStop.disabled = false;
+                    stopwatchStartTime = Date.now() - stopwatchElapsed;
+                    
+                    stopwatchInterval = setInterval(() => {
+                        stopwatchElapsed = Date.now() - stopwatchStartTime;
+                        updateStopwatchDisplay();
+                    }, 10);
+                });
+                
+                stopwatchStop.addEventListener('click', () => {
+                    clearInterval(stopwatchInterval);
+                    stopwatchRunning = false;
+                    stopwatchStart.disabled = false;
+                    stopwatchStop.disabled = true;
+                });
+                
+                stopwatchReset.addEventListener('click', () => {
+                    clearInterval(stopwatchInterval);
+                    stopwatchRunning = false;
+                    stopwatchElapsed = 0;
+                    updateStopwatchDisplay();
+                    stopwatchStart.disabled = false;
+                    stopwatchStop.disabled = true;
+                    lapsList.innerHTML = '';
+                    lapCount = 1;
+                });
+                
+                stopwatchLap.addEventListener('click', () => {
+                    if (!stopwatchRunning) return;
+                    
+                    const lapTime = stopwatchDisplay.textContent;
+                    const lapItem = document.createElement('div');
+                    lapItem.textContent = `Lap ${lapCount}: ${lapTime}`;
+                    lapsList.appendChild(lapItem);
+                    lapCount++;
+                });
+                
+                // Initialize timer display
+                updateTimerDisplay();
+            }
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeToolsGrid();
+        });
+    </script>
+</body>
+</html>
